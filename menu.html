@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>La Carte | Maison Vie — French Fine Dining</title>
+  <meta name="description" content="Thực đơn tinh hoa ẩm thực Pháp tại Maison Vie. Khám phá các món ăn đặc trưng từ gan ngỗng, bò Black Angus đến hải sản tươi sống.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ========== HEADER ========== -->
+  <header class="header scrolled">
+    <div class="container">
+      <a href="index.html" class="logo"><img src="assets/images/logo.png" alt="Maison Vie Logo"></a>
+      <nav class="nav-links" id="navLinks">
+        <a href="index.html">Accueil</a>
+        <a href="about.html">L'Histoire</a>
+        <a href="menu.html" class="active">La Carte</a>
+        <a href="gallery.html">L'Atmosphère</a>
+        <a href="contact.html">Contact</a>
+        <a href="index.html#reservation" class="btn btn-outline nav-cta">Réservation</a>
+      </nav>
+      <button class="menu-toggle" id="menuToggle" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ========== PAGE HEADER ========== -->
+  <section class="page-header">
+    <div class="container">
+      <p class="section-label">Gastronomie</p>
+      <h1 class="hero-title">La Carte</h1>
+      <p class="hero-subtitle">Một cuộc dạo chơi của vị giác qua tinh hoa ẩm thực Pháp</p>
+    </div>
+  </section>
+
+  <!-- ========== FULL MENU ========== -->
+  <section class="menu-page py-section" style="padding: var(--section-py) 0;">
+    <div class="container">
+      
+      <!-- Menu Navigation -->
+      <div class="menu-nav">
+        <span class="menu-nav-btn active" data-target="entrees">Les Entrées</span>
+        <span class="menu-nav-btn" data-target="plats">Plats Principaux</span>
+        <span class="menu-nav-btn" data-target="desserts">Les Desserts</span>
+        <span class="menu-nav-btn" data-target="vins">La Cave à Vins</span>
+      </div>
+
+      <!-- Entrées -->
+      <div class="menu-category" id="entrees">
+        <div class="category-title">
+          <h2>Les Entrées <small>/ Khai vị</small></h2>
+        </div>
+        <div class="full-menu-grid">
+          <div class="menu-item reveal">
+            <div class="menu-item-info">
+              <h3>Foie Gras Poêlé</h3>
+              <p>Gan ngỗng áp chảo, sốt Calvados, brioche nướng vàng & mứt quả mùa</p>
+            </div>
+            <span class="menu-item-price">680.000₫</span>
+          </div>
+          <div class="menu-item reveal">
+            <div class="menu-item-info">
+              <h3>Escargots de Bourgogne</h3>
+              <p>Ốc sên Bourgogne truyền thống, bơ tỏi thảo mộc, bánh mì nướng giòn</p>
+            </div>
+            <span class="menu-item-price">420.000₫</span>
+          </div>
+          <div class="menu-item reveal">
+            <div class="menu-item-info">
+              <h3>Tartare de Thon</h3>
+              <p>Cá ngừ tươi carpaccio, trứng cút, trứng cá muối, dầu olive hữu cơ</p>
+            </div>
+            <span class="menu-item-price">520.000₫</span>
+          </div>
+          <div class="menu-item reveal">
+            <div class="menu-item-info">
+              <h3>Soupe à l'Oignon</h3>
+              <p>Súp hành tây kiểu Pháp truyền thống, phô mai Gruyère tan chảy</p>
+            </div>
+            <span class="menu-item-price">280.000₫</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Plats Principaux -->
+      <div class="menu-category" id="plats">
+        <div class="category-title">
+          <h2>Plats Principaux <small>/ Món chính</small></h2>
+        </div>
+        <div class="full-menu-grid">
+          <div class="menu-item reveal">
+            <div class="menu-item-info">
+              <h3>Filet de Buffle du Vietnam</h3>
+              <p>Thăn trâu Việt Nam áp chảo, sốt tiêu hồng Madagascar, rau mùa</p>
+            </div>
+            <span class="menu-item-price">750.000₫</span>
+          </div>
+          <div class="menu-item reveal">
+            <div class="menu-item-info">
+              <h3>Black Angus Ribeye</h3>
+              <p>Sườn bò Black Angus nướng than, sốt Béarnaise, khoai tây gratin</p>
+            </div>
+            <span class="menu-item-price">890.000₫</span>
+          </div>
+          <div class="menu-item reveal">
+            <div class="menu-item-info">
+              <h3>Magret de Canard</h3>
+              <p>Ức vịt Pháp áp chảo, sốt cam gừng, cà rốt nghiền mật ong</p>
+            </div>
+            <span class="menu-item-price">620.000₫</span>
+          </div>
+          <div class="menu-item reveal">
+            <div class="menu-item-info">
+              <h3>Loup de Mer</h3>
+              <p>Cá chẽm áp chảo da giòn, sốt bơ chanh, măng tây xanh</p>
+            </div>
+            <span class="menu-item-price">580.000₫</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Desserts -->
+      <div class="menu-category" id="desserts">
+        <div class="category-title">
+          <h2>Les Desserts <small>/ Tráng miệng</small></h2>
+        </div>
+        <div class="full-menu-grid">
+          <div class="menu-item reveal">
+            <div class="menu-item-info">
+              <h3>Soufflé Grand Marnier</h3>
+              <p>Soufflé cam Grand Marnier phồng xốp, kem Madagascar vanilla</p>
+            </div>
+            <span class="menu-item-price">350.000₫</span>
+          </div>
+          <div class="menu-item reveal">
+            <div class="menu-item-info">
+              <h3>Crème Brûlée</h3>
+              <p>Kem trứng nướng truyền thống với lớp đường cháy giòn</p>
+            </div>
+            <span class="menu-item-price">180.000₫</span>
+          </div>
+          <div class="menu-item reveal">
+            <div class="menu-item-info">
+              <h3>Fondant au Chocolat</h3>
+              <p>Bánh chocolate tan chảy, kem quả mâm xôi chua dịu</p>
+            </div>
+            <span class="menu-item-price">220.000₫</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-logo"><img src="assets/images/logo.png" alt="Maison Vie Logo"></div>
+      <p class="footer-tagline">L'essence de la cuisine française au cœur de Hanoï</p>
+      <div class="social-links">
+        <a href="https://facebook.com" target="_blank" aria-label="Facebook">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+        </a>
+        <a href="https://instagram.com" target="_blank" aria-label="Instagram">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        </a>
+        <a href="https://tripadvisor.com" target="_blank" aria-label="TripAdvisor">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+        </a>
+      </div>
+      <p class="footer-copy">© 2026 Maison Vie. Tous droits réservés.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
