@@ -291,7 +291,7 @@ h3 { font-family: var(--font-accent); font-size: clamp(1.375rem, 2vw, 1.75rem); 
 .hero-bg {
   position: absolute;
   inset: 0;
-  background: url('assets/images/hero.png') center/cover no-repeat;
+  background: url('assets/images/D0H-8614.webp') center/cover no-repeat;
   transform: scale(1.05);
   transition: transform 0.3s ease;
 }
