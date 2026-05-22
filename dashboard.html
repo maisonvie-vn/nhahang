@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Maison Vie — Reservations Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--gold:#C5A55A;--dark:#0E0E0C;--card:#161614;--border:#2A2824;--cream:#F5F0E8;--muted:#A09A8C;--dim:#6E6A60;--green:#3E7A4E;--red:#8A3A48;--amber:#9A7A2E}
+body{font-family:'Jost',sans-serif;background:var(--dark);color:var(--cream);min-height:100vh}
+a{color:var(--gold)}
+
+/* LOGIN GATE */
+.gate{position:fixed;inset:0;background:var(--dark);display:flex;align-items:center;justify-content:center;z-index:100}
+.gate-box{text-align:center;max-width:340px;width:90%}
+.gate-logo{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--gold);letter-spacing:.25em;text-transform:uppercase;margin-bottom:.5rem}
+.gate-sub{font-size:.8rem;letter-spacing:.15em;text-transform:uppercase;color:var(--dim);margin-bottom:2rem}
+.gate input{width:100%;background:var(--card);border:1px solid var(--border);color:var(--cream);padding:.9rem;font-family:'Jost';font-size:1rem;text-align:center;letter-spacing:.1em}
+.gate input:focus{outline:none;border-color:var(--gold)}
+.gate button{width:100%;margin-top:1rem;background:var(--gold);color:var(--dark);border:none;padding:.9rem;font-family:'Jost';font-size:.85rem;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;font-weight:500}
+.gate .err{color:#E0909C;font-size:.85rem;margin-top:1rem;min-height:1.2em}
+
+/* APP */
+.app{display:none;max-width:1280px;margin:0 auto;padding:2rem}
+.app.show{display:block}
+header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+.h-title{font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--gold)}
+.h-title span{display:block;font-family:'Jost';font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);margin-top:.3rem}
+.h-actions{display:flex;gap:.7rem;align-items:center;flex-wrap:wrap}
+.btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:.55rem 1.1rem;font-family:'Jost';font-size:.75rem;letter-spacing:.1em;cursor:pointer;transition:all .3s;text-decoration:none;display:inline-block}
+.btn:hover{border-color:var(--gold);color:var(--gold)}
+.btn.active{background:var(--gold);color:var(--dark);border-color:var(--gold)}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem}
+.stat{background:var(--card);border:1px solid var(--border);padding:1.3rem}
+.stat .n{font-family:'Playfair Display',serif;font-size:2rem;color:var(--gold)}
+.stat .l{font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:var(--dim);margin-top:.3rem}
+
+/* FILTERS */
+.filters{display:flex;gap:.6rem;margin-bottom:1.5rem;flex-wrap:wrap;align-items:center}
+.filters input[type=date]{background:var(--card);border:1px solid var(--border);color:var(--cream);padding:.5rem .8rem;font-family:'Jost';font-size:.85rem}
+.search{flex:1;min-width:200px;background:var(--card);border:1px solid var(--border);color:var(--cream);padding:.55rem .9rem;font-family:'Jost';font-size:.9rem}
+.search:focus{outline:none;border-color:var(--gold)}
+
+/* TABLE */
+.table-wrap{background:var(--card);border:1px solid var(--border);overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:1100px}
+th{text-align:left;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);padding:1rem;border-bottom:1px solid var(--border);font-weight:500;white-space:nowrap}
+td{padding:1rem;border-bottom:1px solid var(--border);font-size:.92rem;color:var(--cream);vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(197,165,90,.04)}
+.guest-name{font-weight:500}
+.muted{color:var(--muted);font-size:.85rem}
+.diet-tag{display:inline-block;background:rgba(197,165,90,.12);color:var(--gold);font-size:.68rem;padding:.15rem .5rem;margin:.1rem;border-radius:2px;white-space:nowrap}
+.lang-flag{font-size:.7rem;color:var(--dim);text-transform:uppercase}
+
+/* STATUS */
+.status{font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;padding:.3rem .7rem;border-radius:2px;cursor:pointer;border:1px solid;background:transparent}
+.status.pending{color:var(--amber);border-color:var(--amber)}
+.status.confirmed{color:#6BC07E;border-color:var(--green)}
+.status.cancelled{color:#E0909C;border-color:var(--red);text-decoration:line-through}
+
+.empty{text-align:center;padding:4rem;color:var(--dim)}
+.loading{text-align:center;padding:4rem;color:var(--gold)}
+.config-warn{background:rgba(138,58,72,.15);border:1px solid var(--red);color:#E0B0B8;padding:1rem;margin-bottom:1.5rem;font-size:.9rem;line-height:1.5}
+
+@media(max-width:680px){.stats{grid-template-columns:1fr 1fr}.app{padding:1rem}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN GATE -->
+<div class="gate" id="gate">
+<div class="gate-box">
+<div class="gate-logo">Maison Vie</div>
+<div class="gate-sub">Reservations Dashboard</div>
+<input type="email" id="email" placeholder="Staff Email Address" autocomplete="email" style="margin-bottom: 0.8rem; text-align: left;">
+<input type="password" id="pw" placeholder="Enter password" autocomplete="current-password">
+<button id="loginBtn">Enter</button>
+<div class="err" id="loginErr"></div>
+</div>
+</div>
+
+<!-- APP -->
+<div class="app" id="app">
+<header>
+<div class="h-title">Reservations<span>Maison Vie · Hanoi</span></div>
+<div class="h-actions">
+<button class="btn active" data-filter="all">All</button>
+<button class="btn" data-filter="today">Today</button>
+<button class="btn" data-filter="upcoming">Upcoming</button>
+<button class="btn" id="refreshBtn">↻ Refresh</button>
+<button class="btn" id="exportBtn">⭳ CSV</button>
+<button class="btn" id="logoutBtn">Logout</button>
+</div>
+</header>
+
+<div id="configWarn"></div>
+
+<div class="stats">
+<div class="stat"><div class="n" id="statTotal">—</div><div class="l">Total</div></div>
+<div class="stat"><div class="n" id="statToday">—</div><div class="l">Today</div></div>
+<div class="stat"><div class="n" id="statUpcoming">—</div><div class="l">Upcoming</div></div>
+<div class="stat"><div class="n" id="statGuests">—</div><div class="l">Guests (upcoming)</div></div>
+</div>
+
+<div class="filters">
+<input type="text" class="search" id="search" placeholder="Search name, phone, email…">
+<input type="date" id="dateFrom" title="From date">
+<input type="date" id="dateTo" title="To date">
+</div>
+
+<div class="table-wrap">
+<table>
+<thead><tr>
+<th>Date / Time</th><th>Guest</th><th>Contact</th><th>Guests</th><th>Seating</th><th>Occasion</th><th>Dietary</th><th>Notes</th><th>Lang</th><th>Status</th>
+</tr></thead>
+<tbody id="rows"><tr><td colspan="10" class="loading">Loading…</td></tr></tbody>
+</table>
+</div>
+</div>
+
+<script>
+/* ============================================================
+   CONFIG — paste the SAME Supabase credentials as the website
+   ============================================================ */
+const SUPABASE_URL = "";        // e.g. "https://abcd1234.supabase.co"
+const SUPABASE_ANON_KEY = "";   // e.g. "eyJhbGci..."
+
+/* ===== STATE ===== */
+let sb = null, allRows = [], activeFilter = "all";
+if(SUPABASE_URL && SUPABASE_ANON_KEY && window.supabase){
+  sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}
+
+/* ===== LOGIN ===== */
+async function tryLogin(){
+  const email = document.getElementById("email").value.trim();
+  const pw = document.getElementById("pw").value;
+  const errEl = document.getElementById("loginErr");
+  errEl.textContent = "";
+
+  if(!sb) {
+    // Demo mode fallback
+    if(email === "admin@maisonvie.vn" && pw === "@989091383Urmylove@") {
+      document.getElementById("gate").style.display = "none";
+      document.getElementById("app").classList.add("show");
+      initApp();
+    } else {
+      errEl.textContent = "Demo Login: use admin@maisonvie.vn and @989091383Urmylove@";
+    }
+    return;
+  }
+
+  try {
+    const { error } = await sb.auth.signInWithPassword({ email, password: pw });
+    if(error) throw error;
+  } catch(e) {
+    errEl.textContent = "Login failed: " + e.message;
+  }
+}
+document.getElementById("loginBtn").addEventListener("click", tryLogin);
+document.getElementById("pw").addEventListener("keydown", e=>{ if(e.key==="Enter") tryLogin(); });
+document.getElementById("email").addEventListener("keydown", e=>{ if(e.key==="Enter") tryLogin(); });
+
+/* ===== AUTH STATE LISTENER ===== */
+if(sb) {
+  sb.auth.onAuthStateChange((event, session) => {
+    if (session) {
+      document.getElementById("gate").style.display = "none";
+      document.getElementById("app").classList.add("show");
+      initApp();
+    } else {
+      document.getElementById("gate").style.display = "flex";
+      document.getElementById("app").classList.remove("show");
+    }
+  });
+
+  // Self check on load
+  window.addEventListener("DOMContentLoaded", async () => {
+    const { data: { session } } = await sb.auth.getSession();
+    if (session) {
+      document.getElementById("gate").style.display = "none";
+      document.getElementById("app").classList.add("show");
+      initApp();
+    }
+  });
+}
+
+/* ===== INIT ===== */
+function initApp(){
+  if(!sb){
+    document.getElementById("configWarn").innerHTML =
+      '<div class="config-warn">⚠ Supabase is not configured. Paste your <b>SUPABASE_URL</b> and <b>SUPABASE_ANON_KEY</b> at the top of this file to load live reservations.</div>';
+    document.getElementById("rows").innerHTML = '<tr><td colspan="10" class="empty">No connection — showing demo data.</td></tr>';
+    allRows = demoData(); render();
+    return;
+  }
+  loadRows();
+}
+
+/* ===== LOAD ===== */
+async function loadRows(){
+  document.getElementById("rows").innerHTML = '<tr><td colspan="10" class="loading">Loading…</td></tr>';
+  try{
+    const { data, error } = await sb.from("reservations").select("*").order("res_date",{ascending:true}).order("res_time",{ascending:true});
+    if(error) throw error;
+    allRows = data || [];
+    render();
+  }catch(e){
+    console.error(e);
+    document.getElementById("rows").innerHTML = `<tr><td colspan="10" class="empty">Error loading: ${e.message}<br><span class="muted">Make sure the SELECT policy is enabled for authenticated users (see supabase-setup.sql).</span></td></tr>`;
+  }
+}
+
+/* ===== FILTER + RENDER ===== */
+function todayStr(){ return new Date().toISOString().split("T")[0]; }
+function getFiltered(){
+  const today = todayStr();
+  const q = document.getElementById("search").value.toLowerCase().trim();
+  const from = document.getElementById("dateFrom").value;
+  const to = document.getElementById("dateTo").value;
+  return allRows.filter(r=>{
+    if(activeFilter==="today" && r.res_date!==today) return false;
+    if(activeFilter==="upcoming" && r.res_date<today) return false;
+    if(from && r.res_date<from) return false;
+    if(to && r.res_date>to) return false;
+    if(q){
+      const hay = `${r.name} ${r.phone} ${r.email} ${r.seating_preference} ${r.purpose}`.toLowerCase();
+      if(!hay.includes(q)) return false;
+    }
+    return true;
+  });
+}
+function render(){
+  const today = todayStr();
+  // stats
+  document.getElementById("statTotal").textContent = allRows.length;
+  document.getElementById("statToday").textContent = allRows.filter(r=>r.res_date===today).length;
+  const up = allRows.filter(r=>r.res_date>=today && r.status!=="cancelled");
+  document.getElementById("statUpcoming").textContent = up.length;
+  document.getElementById("statGuests").textContent = up.reduce((s,r)=>s+(parseInt(r.guests)||0),0);
+
+  const rows = getFiltered();
+  const tb = document.getElementById("rows");
+  if(!rows.length){ tb.innerHTML = '<tr><td colspan="10" class="empty">No reservations match.</td></tr>'; return; }
+  tb.innerHTML = rows.map(r=>{
+    const diet = (Array.isArray(r.dietary)?r.dietary:[]).map(d=>`<span class="diet-tag">${esc(d)}</span>`).join("") || '<span class="muted">—</span>';
+    const st = r.status || "pending";
+    
+    // Nice labels for seating and purpose
+    const seatingLabel = r.seating_preference === 'private' ? 'Private Room (2nd Floor)' 
+                       : r.seating_preference === 'window' ? 'Big Function Room (3rd Floor)' 
+                       : 'Standard Public Dining (1st Floor)';
+                       
+    const purposeLabel = r.purpose === 'business' ? 'Business VIP'
+                       : r.purpose === 'anniversary' ? 'Anniversary'
+                       : r.purpose === 'proposal' ? 'Proposal 💍'
+                       : 'Fine Dining';
+
+    return `<tr>
+      <td><b>${esc(r.res_date||"")}</b><br><span class="muted">${esc(r.res_time||"")}</span></td>
+      <td class="guest-name">${esc(r.name||"")}</td>
+      <td><a href="tel:${esc(r.phone||"")}">${esc(r.phone||"")}</a><br><span class="muted">${esc(r.email||"")}</span></td>
+      <td>${esc(String(r.guests||""))}</td>
+      <td><span class="muted" style="font-weight: 500;">${esc(seatingLabel)}</span></td>
+      <td><span class="muted" style="font-weight: 500;">${esc(purposeLabel)}</span></td>
+      <td>${diet}</td>
+      <td class="muted">${esc(r.notes||"—")}</td>
+      <td class="lang-flag">${esc(r.language||"en")}</td>
+      <td><button class="status ${st}" data-id="${r.id}" data-status="${st}">${st}</button></td>
+    </tr>`;
+  }).join("");
+  // wire status toggle
+  tb.querySelectorAll(".status").forEach(b=>b.addEventListener("click", ()=>cycleStatus(b)));
+}
+
+/* ===== STATUS CYCLE: pending → confirmed → cancelled → pending ===== */
+async function cycleStatus(btn){
+  const order = ["pending","confirmed","cancelled"];
+  const cur = btn.dataset.status;
+  const next = order[(order.indexOf(cur)+1)%order.length];
+  const id = btn.dataset.id;
+  if(!sb){ // demo
+    const row = allRows.find(r=>String(r.id)===String(id)); if(row) row.status=next; render(); return;
+  }
+  try{
+    const { error } = await sb.from("reservations").update({status:next}).eq("id", id);
+    if(error) throw error;
+    const row = allRows.find(r=>String(r.id)===String(id)); if(row) row.status=next;
+    render();
+  }catch(e){ alert("Update failed: "+e.message+"\n(Check the UPDATE policy in supabase-setup.sql)"); }
+}
+
+/* ===== CSV EXPORT ===== */
+function exportCSV(){
+  const rows = getFiltered();
+  const head = ["Date","Time","Name","Phone","Email","Guests","Seating Preference","Occasion","Dietary","Notes","Language","Status"];
+  const lines = [head.join(",")];
+  rows.forEach(r=>{
+    const cells = [r.res_date,r.res_time,r.name,r.phone,r.email,r.guests,r.seating_preference,r.purpose,(r.dietary||[]).join("; "),r.notes,r.language,r.status]
+      .map(c=>`"${String(c??"").replace(/"/g,'""')}"`);
+    lines.push(cells.join(","));
+  });
+  const blob = new Blob([lines.join("\n")],{type:"text/csv"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `maison-vie-reservations-${todayStr()}.csv`;
+  a.click();
+}
+
+/* ===== EVENTS ===== */
+document.querySelectorAll("[data-filter]").forEach(b=>b.addEventListener("click", ()=>{
+  document.querySelectorAll("[data-filter]").forEach(x=>x.classList.remove("active"));
+  b.classList.add("active"); activeFilter = b.dataset.filter; render();
+}));
+document.getElementById("search").addEventListener("input", render);
+document.getElementById("dateFrom").addEventListener("change", render);
+document.getElementById("dateTo").addEventListener("change", render);
+document.getElementById("refreshBtn").addEventListener("click", ()=>{ if(sb) loadRows(); });
+document.getElementById("exportBtn").addEventListener("click", exportCSV);
+document.getElementById("logoutBtn").addEventListener("click", async ()=>{
+  if(sb) {
+    await sb.auth.signOut();
+  } else {
+    location.reload();
+  }
+});
+
+/* ===== HELPERS ===== */
+function esc(s){ return String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function demoData(){
+  const t = todayStr();
+  return [
+    {id:1,res_date:t,res_time:"19:00",name:"Nguyễn Văn A",phone:"+84901234567",email:"a@example.com",guests:4,seating_preference:"private",purpose:"business",dietary:["vegetarian"],notes:"Window table",language:"vi",status:"confirmed"},
+    {id:2,res_date:t,res_time:"20:30",name:"Smith John",phone:"+84907654321",email:"john@example.com",guests:2,seating_preference:"window",purpose:"anniversary",dietary:["seafood_allergy","nut_allergy"],notes:"Anniversary",language:"en",status:"pending"},
+    {id:3,res_date:"2026-12-31",res_time:"18:00",name:"田中 太郎",phone:"+84909999888",email:"tanaka@example.jp",guests:6,seating_preference:"standard",purpose:"fine_dining",dietary:[],notes:"NYE dinner",language:"ja",status:"pending"}
+  ];
+}
+</script>
+</body>
+</html>
