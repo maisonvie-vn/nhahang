@@ -146,12 +146,12 @@ async function tryLogin(){
 
   if(!sb) {
     // Demo mode fallback
-    if(email === "admin@maisonvie.vn" && pw === "@989091383Urmylove@") {
+    if(email === "thanhceo.mr@gmail.com" && pw === "@989091383Urmylove@") {
       document.getElementById("gate").style.display = "none";
       document.getElementById("app").classList.add("show");
       initApp();
     } else {
-      errEl.textContent = "Demo Login: use admin@maisonvie.vn and @989091383Urmylove@";
+      errEl.textContent = "Demo Login: use thanhceo.mr@gmail.com and @989091383Urmylove@";
     }
     return;
   }

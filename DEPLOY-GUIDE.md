@@ -30,11 +30,11 @@ staff dashboard and an optional email-notification Edge Function.
    const SUPABASE_ANON_KEY = "eyJhbGci...";
    ```
 5. Go to your Supabase Dashboard → **Authentication → Users** → Click **Add User → Create User** (Email & Password):
-   - Enter your staff email (e.g. `admin@maisonvie.vn`) and a secure password (e.g. `@989091383Urmylove@`).
+   - Enter your staff email (e.g. `thanhceo.mr@gmail.com`) and a secure password (e.g. `@989091383Urmylove@`).
    - Uncheck **Auto-confirm User** or **Send email confirmation** (so the account is active immediately without needing email validation), then click **Save**.
 
 > Without keys, both pages run in DEMO mode (form validates but doesn't save;
-> dashboard shows sample rows using `admin@maisonvie.vn` / `@989091383Urmylove@`).
+> dashboard shows sample rows using `thanhceo.mr@gmail.com` / `@989091383Urmylove@`).
 
 ---
 
